@@ -124,19 +124,26 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: Stack(
         children: <Widget>[
           Align(
-              alignment: Alignment.bottomRight,
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.all(0), // Adicionando espaçamento
               child: FloatingActionButton(
                 onPressed: _incrementCounter,
                 tooltip: 'Increment',
                 child: const Icon(Icons.add),
-              )),
+              ),
+            ),
+          ),
           Align(
               alignment: Alignment.bottomLeft,
-              child: FloatingActionButton(
-                onPressed: _decrementCounter,
-                tooltip: 'Decrement',
-                child: const Icon(Icons.remove),
-              ))
+              child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 30.0), // Adicionando espaçamento
+                  child: FloatingActionButton(
+                    onPressed: _decrementCounter,
+                    tooltip: 'Decrement',
+                    child: const Icon(Icons.remove),
+                  )))
         ],
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
