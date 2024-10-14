@@ -23,7 +23,10 @@ class MyApp extends StatelessWidget {
         body: Center(
           child: Column(
             children: [
+              // Primeiro bloco com largura máxima e margem
               Container(
+                width: double.infinity, // Ocupar toda a largura
+                margin: const EdgeInsets.all(8.0), // Margem ao redor
                 padding: const EdgeInsets.all(16.0),
                 color: Colors.blueAccent,
                 child: const Text(
@@ -31,7 +34,10 @@ class MyApp extends StatelessWidget {
                   style: TextStyle(color: Colors.white, fontSize: 18),
                 ),
               ),
+              // Segundo bloco com largura máxima e margem
               Container(
+                width: double.infinity, // Ocupar toda a largura
+                margin: const EdgeInsets.all(8.0), // Margem ao redor
                 padding: const EdgeInsets.all(16.0),
                 color: Colors.greenAccent,
                 child: const Text(
