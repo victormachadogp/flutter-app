@@ -15,14 +15,68 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       title: 'Flutter Demo',
-      home: const HomePage(), // Definindo a HomePage corretamente
+      home: const HomePage(),
     );
   }
 }
 
-// Criação de uma nova classe HomePage para separar a lógica da página inicial
-class HomePage extends StatelessWidget {
+// Criação de um StatefulWidget para gerenciar o estado da lista de blocos
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final List<String> blocks = [
+    'Primeiro Bloco: Texto no primeiro blocos',
+    'Segundo Bloco: Texto no segundo bloco'
+  ];
+
+  // Função para adicionar um novo bloco
+  void _addBlock(String text) {
+    setState(() {
+      blocks.add(text);
+    });
+  }
+
+  // Função para exibir o diálogo para inserir um novo bloco
+  void _showAddBlockDialog() {
+    String newText = '';
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Adicionar Novo Bloco'),
+          content: TextField(
+            onChanged: (value) {
+              newText = value;
+            },
+            decoration: const InputDecoration(hintText: 'Digite o título'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Fecha o diálogo
+              },
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (newText.isNotEmpty) {
+                  _addBlock(newText);
+                }
+                Navigator.of(context).pop(); // Fecha o diálogo
+              },
+              child: const Text('Ok'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,63 +88,42 @@ class HomePage extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            // Primeiro botão com largura máxima e margem
-            InkWell(
-              onTap: () {
-                // Navegar para a DetailPage com o texto correspondente
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                        const DetailPage(
-                      text: 'Primeiro Bloco: Texto no primeiro bloco',
+            // Exibir cada bloco dinamicamente
+            ...blocks.asMap().entries.map((entry) {
+              int index = entry.key;
+              String text = entry.value;
+
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          DetailPage(text: text),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        return child; // Sem animação
+                      },
                     ),
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      return child; // Sem animação
-                    },
+                  );
+                },
+                child: Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(16.0),
+                  color:
+                      index % 2 == 0 ? Colors.blueAccent : Colors.greenAccent,
+                  child: Text(
+                    text,
+                    style: const TextStyle(color: Colors.white, fontSize: 18),
                   ),
-                );
-              },
-              child: Container(
-                width: double.infinity, // Ocupar toda a largura
-                margin: const EdgeInsets.all(8.0), // Margem ao redor
-                padding: const EdgeInsets.all(16.0),
-                color: Colors.blueAccent,
-                child: const Text(
-                  'Texto no primeiro bloco',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
                 ),
-              ),
-            ),
-            // Segundo bloco com largura máxima e margem
-            InkWell(
-              onTap: () {
-                // Navegar para a DetailPage com o texto correspondente
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                        const DetailPage(
-                      text: 'Segundo Bloco: Texto no segundo bloco',
-                    ),
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      return child; // Sem animação
-                    },
-                  ),
-                );
-              },
-              child: Container(
-                width: double.infinity, // Ocupar toda a largura
-                margin: const EdgeInsets.all(8.0), // Margem ao redor
-                padding: const EdgeInsets.all(16.0),
-                color: Colors.greenAccent,
-                child: const Text(
-                  'Texto no segundo bloco',
-                  style: TextStyle(color: Colors.black, fontSize: 18),
-                ),
-              ),
+              );
+            }),
+            // Botão para adicionar novo bloco
+            ElevatedButton(
+              onPressed: _showAddBlockDialog,
+              child: const Text('Adicionar Novo Bloco'),
             ),
           ],
         ),
@@ -99,7 +132,7 @@ class HomePage extends StatelessWidget {
   }
 }
 
-// Detail page
+// Página de detalhes
 class DetailPage extends StatelessWidget {
   final String text;
 
@@ -114,7 +147,7 @@ class DetailPage extends StatelessWidget {
       ),
       body: Center(
         child: Text(
-          text, // Mostra o texto correspondente do bloco clicado
+          text,
           style: const TextStyle(fontSize: 24),
         ),
       ),
